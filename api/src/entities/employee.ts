@@ -1,16 +1,16 @@
 import { Column, Entity, ManyToOne } from "typeorm";
 import { Enterprise } from "./enterprise";
-import { User } from "./user";
+import  User  from "./user";
 
 @Entity()
 export class Employee extends User {
     @Column()
-    Age: number
+    age: number
 
     @Column()
     sex: string
 
-    @Column()
+    @Column({default:0})
     points: number;
 
     @ManyToOne(() => Enterprise, (enterprise) => enterprise.employees)

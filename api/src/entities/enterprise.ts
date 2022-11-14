@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany } from "typeorm";
 import { Employee } from "./employee";
-import { User } from "./user";
+import  User  from "./user";
 
 @Entity()
 export class Enterprise extends User {
@@ -10,7 +10,7 @@ export class Enterprise extends User {
     @Column()
     Location: string
 
-    @Column()
+    @Column({default:0})
     points: number;
 
     @OneToMany(() => Employee, (employee) => employee.enterprise)

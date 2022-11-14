@@ -23,11 +23,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Enterprise = void 0;
 var typeorm_1 = require("typeorm");
 var employee_1 = require("./employee");
-var user_1 = require("./user");
+var user_1 = __importDefault(require("./user"));
 var Enterprise = /** @class */ (function (_super) {
     __extends(Enterprise, _super);
     function Enterprise() {
@@ -42,7 +45,7 @@ var Enterprise = /** @class */ (function (_super) {
         __metadata("design:type", String)
     ], Enterprise.prototype, "Location", void 0);
     __decorate([
-        (0, typeorm_1.Column)(),
+        (0, typeorm_1.Column)({ default: 0 }),
         __metadata("design:type", Number)
     ], Enterprise.prototype, "points", void 0);
     __decorate([
@@ -53,6 +56,6 @@ var Enterprise = /** @class */ (function (_super) {
         (0, typeorm_1.Entity)()
     ], Enterprise);
     return Enterprise;
-}(user_1.User));
+}(user_1.default));
 exports.Enterprise = Enterprise;
 //# sourceMappingURL=enterprise.js.map

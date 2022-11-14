@@ -1,6 +1,6 @@
 import { Column, PrimaryGeneratedColumn } from "typeorm"
 
-export abstract class User {
+export default abstract class User {
   @PrimaryGeneratedColumn()
   id: number
 
@@ -9,4 +9,7 @@ export abstract class User {
 
   @Column()
   email: string
+
+  @Column()
+  password: string
 }

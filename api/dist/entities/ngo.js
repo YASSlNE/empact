@@ -23,10 +23,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Ngo = void 0;
 var typeorm_1 = require("typeorm");
-var user_1 = require("./user");
+var user_1 = __importDefault(require("./user"));
 var Ngo = /** @class */ (function (_super) {
     __extends(Ngo, _super);
     function Ngo() {
@@ -40,6 +43,6 @@ var Ngo = /** @class */ (function (_super) {
         (0, typeorm_1.Entity)()
     ], Ngo);
     return Ngo;
-}(user_1.User));
+}(user_1.default));
 exports.Ngo = Ngo;
 //# sourceMappingURL=ngo.js.map

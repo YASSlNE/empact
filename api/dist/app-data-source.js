@@ -9,7 +9,7 @@ exports.dataSource = new typeorm_1.DataSource({
     username: "louay",
     password: "5azk40lhDMCEjeAxwgJPBPtRVvsfFgq1",
     database: "empact",
-    entities: ["dist/entities/*.js"],
+    entities: ["dist/entities/*.{js, ts}"],
     logging: true,
     synchronize: true,
     ssl: true
