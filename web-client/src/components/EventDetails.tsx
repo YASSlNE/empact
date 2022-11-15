@@ -3,7 +3,7 @@ import { event } from './EventCard'
 import { useParams, useLocation } from 'react-router-dom'
 
 
-function EventDetails(this: any, {eventPictureUrl, name, mainActivity, date, location, numberOfNeededVolunteers, pointsPerVolunteer, details, id} : event) {
+function EventDetails(this: any, {eventPictureUrl, name,  date, location, numberOfNeededVolunteers, pointsPerVolunteer, details, id} : event) {
 
 
 
@@ -18,7 +18,6 @@ function EventDetails(this: any, {eventPictureUrl, name, mainActivity, date, loc
 // *********
     eventPictureUrl=loc.state.eventPictureUrl;
     name=loc.state.name;
-    mainActivity=loc.state.mainActivity;
     date=loc.state.date;
     location=loc.state.location;
     numberOfNeededVolunteers=loc.state.numberOfNeededVolunteers;

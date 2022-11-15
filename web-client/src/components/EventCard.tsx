@@ -24,7 +24,7 @@ EventCard.defaultProps={
     name:"ziw",
     mainActivity:"Actziwziw",
 }
-function EventCard({eventPictureUrl, name, mainActivity, date, location, numberOfNeededVolunteers, pointsPerVolunteer, details, id} : event) {
+function EventCard({eventPictureUrl, name,  date, location, numberOfNeededVolunteers, pointsPerVolunteer, details, id} : event) {
 
 
 
@@ -46,7 +46,7 @@ function EventCard({eventPictureUrl, name, mainActivity, date, location, numberO
 
   return (
     <>
-    <Link to='/cardDetails/' state={{eventPictureUrl:eventPictureUrl, name: name, mainActivity:mainActivity, date:date, location:location, numberOfNeededVolunteers:numberOfNeededVolunteers, pointsPerVolunteer, details:details}}>
+    <Link to='/cardDetails/' state={{eventPictureUrl:eventPictureUrl, name: name,  date:date, location:location, numberOfNeededVolunteers:numberOfNeededVolunteers, pointsPerVolunteer, details:details}}>
     <div style={bgSettings} onMouseLeave={(MouseEvent)=> setHover(false)} onMouseEnter={(MouseEvent)=> setHover(true)} className="flex w-[250px] h-[250px] rounded-xl">
         
         
