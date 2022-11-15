@@ -10,6 +10,9 @@ import { Employee } from '../entities/employee';
 import { Ngo } from '../entities/ngo';
 
 import { dataSource } from "../app-data-source"
+import { createLoggedInUserDto } from '../utils/mapper.util';
+import { Roles } from '../enums/roles.enum';
+import { createTokenFromUser } from '../utils/auth.util';
 
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -58,18 +61,19 @@ export class UserController {
                 { where: { email: req.body.email } }
                 );
 
-        if (!enterprise && !ngo && !employee) {
-            const newEnterprise = await dataSource.getRepository(Enterprise).create();
-            newEnterprise.email = email;
-            newEnterprise.name = name;
-            newEnterprise.fieldOfInterest = fieldOfInterest;
-            newEnterprise.Location = Location;
-            newEnterprise.password = bcrypt.hashSync(password, bcrypt.genSaltSync(10));;
-            const response = await dataSource.getRepository(Enterprise).save(newEnterprise);
-            return res.status(200).send({ response });
-        }
+        if (enterprise || ngo || employee)
+            return res.status(400).send({ error: 'user already exist' });
 
-        return res.status(400).send({ error: 'user already exist' });
+        const newEnterprise = await dataSource.getRepository(Enterprise).create();
+        newEnterprise.email = email;
+        newEnterprise.name = name;
+        newEnterprise.fieldOfInterest = fieldOfInterest;
+        newEnterprise.Location = Location;
+        newEnterprise.password = bcrypt.hashSync(password, bcrypt.genSaltSync(10));;
+        const response = await dataSource.getRepository(Enterprise).save(newEnterprise);
+        const token = createTokenFromUser(response, Roles.Enterprise)
+        const dto = createLoggedInUserDto(response, token);
+        return res.status(200).send({ dto });
     }
 
 
@@ -96,18 +100,19 @@ export class UserController {
 
 
 
-        if (!enterprise && !ngo && !employee) {
-            const newEmployee = await dataSource.getRepository(Employee).create();
-            newEmployee.email = email;
-            newEmployee.name = name;
-            newEmployee.age = age;
-            newEmployee.password = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-            newEmployee.sex = sex;
-            const response = await dataSource.getRepository(Employee).save(newEmployee);
-            return res.status(200).send({ response });
-        }
+        if (enterprise || ngo || employee)
+            return res.status(400).send({ error: 'user already exist' });
 
-        return res.status(400).send({ error: 'user already exist' });
+        const newEmployee = await dataSource.getRepository(Employee).create();
+        newEmployee.email = email;
+        newEmployee.name = name;
+        newEmployee.age = age;
+        newEmployee.password = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+        newEmployee.sex = sex;
+        const response = await dataSource.getRepository(Employee).save(newEmployee);
+        const token = createTokenFromUser(response, Roles.Employee)
+        const dto = createLoggedInUserDto(response, token);
+        return res.status(200).send({ dto });
     }
 
 
@@ -131,17 +136,18 @@ export class UserController {
 
 
 
-        if (!enterprise && !ngo && !employee) {
-            const newNgo = await dataSource.getRepository(Ngo).create();
-            newNgo.email = email;
-            newNgo.name = name;
-            newNgo.fieldOfInterest = fieldOfInterest;
-            newNgo.password = bcrypt.hashSync(password, bcrypt.genSaltSync(10));;
-            const response = await dataSource.getRepository(Ngo).save(newNgo);
-            return res.status(200).send({ response });
-        }
+        if (enterprise || ngo || employee)
+            return res.status(400).send({ error: 'user already exist' });
 
-        return res.status(400).send({ error: 'user already exist' });
+        const newNgo = await dataSource.getRepository(Ngo).create();
+        newNgo.email = email;
+        newNgo.name = name;
+        newNgo.fieldOfInterest = fieldOfInterest;
+        newNgo.password = bcrypt.hashSync(password, bcrypt.genSaltSync(10));;
+        const response = await dataSource.getRepository(Ngo).save(newNgo);
+        const token = createTokenFromUser(response, Roles.Ngo)
+        const dto = createLoggedInUserDto(response, token);
+        return res.status(200).send({ dto });
     }
     /**
      * @api {post} /api/login Authenticate user
@@ -171,19 +177,13 @@ export class UserController {
 
 // Login User
     public async authenticateUser(req: Request, res: Response, next: any) {
-        passport.authenticate('local', { session: false }, (err, user, info) => {
-            if (!user) {
+        passport.authenticate('local', { session: false }, (err, dto, info) => {
+            if (!dto) {
                 return res.status(401).json(info);
             } else {
-                // generate a signed json web token with the contents of user object and return it in the response
-
-                const token = jwt.sign({ email: user.email }, String(JWT_SECRET));
-                return res.json({ user: { email: user.email }, token });
+                return res.json(dto);
             }
         })(req, res, next);
     }
-
-
-
 
 }

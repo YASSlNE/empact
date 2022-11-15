@@ -10,6 +10,9 @@ export default abstract class User {
   @Column()
   email: string
 
+  @Column({nullable: true})
+  profilePictureUrl: string
+
   @Column()
   password: string
 }

@@ -26,6 +26,10 @@ var User = /** @class */ (function () {
         __metadata("design:type", String)
     ], User.prototype, "email", void 0);
     __decorate([
+        (0, typeorm_1.Column)({ nullable: true }),
+        __metadata("design:type", String)
+    ], User.prototype, "profilePictureUrl", void 0);
+    __decorate([
         (0, typeorm_1.Column)(),
         __metadata("design:type", String)
     ], User.prototype, "password", void 0);

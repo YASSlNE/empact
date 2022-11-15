@@ -1,6 +1,8 @@
 import express from "express"
 import { Request, Response } from "express"
 import { dataSource } from "./app-data-source"
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 
 
@@ -24,18 +26,6 @@ dataSource
 // create and setup express app
 const app = express()
 app.use(express.json());
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // start express server
