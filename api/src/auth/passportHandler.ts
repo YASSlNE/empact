@@ -81,6 +81,10 @@ passport.use(
     },
     (jwtToken, cb) => {
 
+
+
+
+
       dataSource.getRepository(Ngo).findOne({ where: { email: jwtToken.email } }).then((user) => {
         if (!user) {
           return cb(false);
