@@ -1,27 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -64,13 +41,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 var bcrypt_nodejs_1 = __importDefault(require("bcrypt-nodejs"));
-var jwt = __importStar(require("jsonwebtoken"));
 var passport_1 = __importDefault(require("passport"));
 require("../auth/passportHandler");
 var enterprise_1 = require("../entities/enterprise");
 var employee_1 = require("../entities/employee");
 var ngo_1 = require("../entities/ngo");
 var app_data_source_1 = require("../app-data-source");
+var mapper_util_1 = require("../utils/mapper.util");
+var roles_enum_1 = require("../enums/roles.enum");
+var auth_util_1 = require("../utils/auth.util");
 var JWT_SECRET = process.env.JWT_SECRET;
 var UserController = /** @class */ (function () {
     function UserController() {
@@ -97,7 +76,7 @@ var UserController = /** @class */ (function () {
     // Enterprise Registration
     UserController.prototype.registerEnterprise = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, name, email, password, fieldOfInterest, Location, enterprise, employee, ngo, newEnterprise, response;
+            var _a, name, email, password, fieldOfInterest, Location, enterprise, employee, ngo, newEnterprise, response, token, dto;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -111,7 +90,8 @@ var UserController = /** @class */ (function () {
                         return [4 /*yield*/, app_data_source_1.dataSource.getRepository(ngo_1.Ngo).findOne({ where: { email: req.body.email } })];
                     case 3:
                         ngo = _b.sent();
-                        if (!(!enterprise && !ngo && !employee)) return [3 /*break*/, 6];
+                        if (enterprise || ngo || employee)
+                            return [2 /*return*/, res.status(400).send({ error: 'user already exist' })];
                         return [4 /*yield*/, app_data_source_1.dataSource.getRepository(enterprise_1.Enterprise).create()];
                     case 4:
                         newEnterprise = _b.sent();
@@ -124,8 +104,9 @@ var UserController = /** @class */ (function () {
                         return [4 /*yield*/, app_data_source_1.dataSource.getRepository(enterprise_1.Enterprise).save(newEnterprise)];
                     case 5:
                         response = _b.sent();
-                        return [2 /*return*/, res.status(200).send({ response: response })];
-                    case 6: return [2 /*return*/, res.status(400).send({ error: 'user already exist' })];
+                        token = (0, auth_util_1.createTokenFromUser)(response, roles_enum_1.Roles.Enterprise);
+                        dto = (0, mapper_util_1.createLoggedInUserDto)(response, token);
+                        return [2 /*return*/, res.status(200).send({ dto: dto })];
                 }
             });
         });
@@ -133,34 +114,40 @@ var UserController = /** @class */ (function () {
     // Employee Registration
     UserController.prototype.registerEmployee = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, name, email, password, age, sex, enterprise, employee, ngo, newEmployee, response;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var _a, name, email, password, age, sex, companyMail, enterprise, employee, ngo, newEmployee, _b, response, token, dto;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        _a = req.body, name = _a.name, email = _a.email, password = _a.password, age = _a.age, sex = _a.sex;
+                        _a = req.body, name = _a.name, email = _a.email, password = _a.password, age = _a.age, sex = _a.sex, companyMail = _a.companyMail;
                         return [4 /*yield*/, app_data_source_1.dataSource.getRepository(enterprise_1.Enterprise).findOne({ where: { email: req.body.email } })];
                     case 1:
-                        enterprise = _b.sent();
+                        enterprise = _c.sent();
                         return [4 /*yield*/, app_data_source_1.dataSource.getRepository(employee_1.Employee).findOne({ where: { email: req.body.email } })];
                     case 2:
-                        employee = _b.sent();
+                        employee = _c.sent();
                         return [4 /*yield*/, app_data_source_1.dataSource.getRepository(ngo_1.Ngo).findOne({ where: { email: req.body.email } })];
                     case 3:
-                        ngo = _b.sent();
-                        if (!(!enterprise && !ngo && !employee)) return [3 /*break*/, 6];
+                        ngo = _c.sent();
+                        if (enterprise || ngo || employee)
+                            return [2 /*return*/, res.status(400).send({ error: 'user already exist' })];
                         return [4 /*yield*/, app_data_source_1.dataSource.getRepository(employee_1.Employee).create()];
                     case 4:
-                        newEmployee = _b.sent();
+                        newEmployee = _c.sent();
                         newEmployee.email = email;
                         newEmployee.name = name;
                         newEmployee.age = age;
                         newEmployee.password = bcrypt_nodejs_1.default.hashSync(password, bcrypt_nodejs_1.default.genSaltSync(10));
                         newEmployee.sex = sex;
-                        return [4 /*yield*/, app_data_source_1.dataSource.getRepository(employee_1.Employee).save(newEmployee)];
+                        _b = newEmployee;
+                        return [4 /*yield*/, app_data_source_1.dataSource.getRepository(enterprise_1.Enterprise).findOne({ where: { email: companyMail } })];
                     case 5:
-                        response = _b.sent();
-                        return [2 /*return*/, res.status(200).send({ response: response })];
-                    case 6: return [2 /*return*/, res.status(400).send({ error: 'user already exist' })];
+                        _b.enterprise = _c.sent();
+                        return [4 /*yield*/, app_data_source_1.dataSource.getRepository(employee_1.Employee).save(newEmployee)];
+                    case 6:
+                        response = _c.sent();
+                        token = (0, auth_util_1.createTokenFromUser)(response, roles_enum_1.Roles.Employee);
+                        dto = (0, mapper_util_1.createLoggedInUserDto)(response, token);
+                        return [2 /*return*/, res.status(200).send({ dto: dto })];
                 }
             });
         });
@@ -168,7 +155,7 @@ var UserController = /** @class */ (function () {
     // NGO Registration
     UserController.prototype.registerNgo = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, name, email, password, fieldOfInterest, enterprise, employee, ngo, newNgo, response;
+            var _a, name, email, password, fieldOfInterest, enterprise, employee, ngo, newNgo, response, token, dto;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -182,7 +169,8 @@ var UserController = /** @class */ (function () {
                         return [4 /*yield*/, app_data_source_1.dataSource.getRepository(ngo_1.Ngo).findOne({ where: { email: req.body.email } })];
                     case 3:
                         ngo = _b.sent();
-                        if (!(!enterprise && !ngo && !employee)) return [3 /*break*/, 6];
+                        if (enterprise || ngo || employee)
+                            return [2 /*return*/, res.status(400).send({ error: 'user already exist' })];
                         return [4 /*yield*/, app_data_source_1.dataSource.getRepository(ngo_1.Ngo).create()];
                     case 4:
                         newNgo = _b.sent();
@@ -194,8 +182,9 @@ var UserController = /** @class */ (function () {
                         return [4 /*yield*/, app_data_source_1.dataSource.getRepository(ngo_1.Ngo).save(newNgo)];
                     case 5:
                         response = _b.sent();
-                        return [2 /*return*/, res.status(200).send({ response: response })];
-                    case 6: return [2 /*return*/, res.status(400).send({ error: 'user already exist' })];
+                        token = (0, auth_util_1.createTokenFromUser)(response, roles_enum_1.Roles.Ngo);
+                        dto = (0, mapper_util_1.createLoggedInUserDto)(response, token);
+                        return [2 /*return*/, res.status(200).send({ dto: dto })];
                 }
             });
         });
@@ -228,14 +217,12 @@ var UserController = /** @class */ (function () {
     UserController.prototype.authenticateUser = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                passport_1.default.authenticate('local', { session: false }, function (err, user, info) {
-                    if (!user) {
+                passport_1.default.authenticate('local', { session: false }, function (err, dto, info) {
+                    if (!dto) {
                         return res.status(401).json(info);
                     }
                     else {
-                        // generate a signed json web token with the contents of user object and return it in the response
-                        var token = jwt.sign({ email: user.email }, String(JWT_SECRET));
-                        return res.json({ user: { email: user.email }, token: token });
+                        return res.json(dto);
                     }
                 })(req, res, next);
                 return [2 /*return*/];

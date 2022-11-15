@@ -1,10 +1,7 @@
 import express from "express"
-import { Request, Response } from "express"
 import { dataSource } from "./app-data-source"
-
-
-
-import bodyParser from "body-parser";
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 import routes from './routes';
 
@@ -26,18 +23,6 @@ const app = express()
 app.use(express.json());
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 // start express server
 const port = 3000;
 app.listen(port)
@@ -48,3 +33,4 @@ console.log( `server started at http://localhost:${ port }` );
 
 
 app.use('/api', routes.userRouter);
+app.use('/events', routes.eventsRouter);

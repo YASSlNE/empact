@@ -65,30 +65,41 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var passport_1 = __importDefault(require("passport"));
 var passport_local_1 = __importDefault(require("passport-local"));
 var passport_jwt_1 = __importStar(require("passport-jwt"));
+var enterprise_1 = require("../entities/enterprise");
+var employee_1 = require("../entities/employee");
 var ngo_1 = require("../entities/ngo");
 var app_data_source_1 = require("../app-data-source");
 var bcrypt_nodejs_1 = __importDefault(require("bcrypt-nodejs"));
 var secrets_1 = require("../utils/secrets");
+var roles_enum_1 = require("../enums/roles.enum");
+var auth_util_1 = require("../utils/auth.util");
+var mapper_util_1 = require("../utils/mapper.util");
 var LocalStrategy = passport_local_1.default.Strategy;
 var JwtStrategy = passport_jwt_1.default.Strategy;
 passport_1.default.use(new LocalStrategy({
     usernameField: 'email',
     passwordField: 'password',
+    roleField: 'role',
     passReqToCallback: true
-}, function (req, username, password, cb) { return __awaiter(void 0, void 0, void 0, function () {
-    var user;
+}, function (req, email, password, cb) { return __awaiter(void 0, void 0, void 0, function () {
+    var role, type, user;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, app_data_source_1.dataSource.getRepository(ngo_1.Ngo).findOne({ where: { email: username } })];
+            case 0:
+                role = req.query.role;
+                type = entityBasedOnRole(role);
+                return [4 /*yield*/, app_data_source_1.dataSource.getRepository(type).findOne({ where: { email: email } })];
             case 1:
                 user = _a.sent();
                 if (!user)
                     return [2 /*return*/, cb(undefined, false, {
-                            message: "email ".concat(username, " not found."),
+                            message: "email ".concat(email, " not found."),
                         })];
                 bcrypt_nodejs_1.default.compare(password, user.password, function (err, isMatch) {
+                    var token = (0, auth_util_1.createTokenFromUser)(user, role);
+                    var dto = (0, mapper_util_1.createLoggedInUserDto)(user, token);
                     if (isMatch)
-                        return cb(undefined, { email: user.email });
+                        return cb(undefined, dto);
                     else
                         return cb(undefined, false, {
                             message: "Invalid password.",
@@ -102,7 +113,8 @@ passport_1.default.use(new JwtStrategy({
     jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: secrets_1.JWT_SECRET,
 }, function (jwtToken, cb) {
-    app_data_source_1.dataSource.getRepository(ngo_1.Ngo).findOne({ where: { email: jwtToken.email } }).then(function (user) {
+    var type = entityBasedOnRole(jwtToken.role);
+    app_data_source_1.dataSource.getRepository(type).findOne({ where: { id: jwtToken.id } }).then(function (user) {
         if (!user) {
             return cb(false);
         }
@@ -114,4 +126,16 @@ passport_1.default.use(new JwtStrategy({
         }
     });
 }));
+function entityBasedOnRole(role) {
+    switch (role) {
+        case roles_enum_1.Roles.Employee:
+            return employee_1.Employee;
+        case roles_enum_1.Roles.Enterprise:
+            return enterprise_1.Enterprise;
+        case roles_enum_1.Roles.Ngo:
+            return ngo_1.Ngo;
+        default:
+            break;
+    }
+}
 //# sourceMappingURL=passportHandler.js.map

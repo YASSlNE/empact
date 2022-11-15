@@ -19,6 +19,9 @@ import { dataSource } from "../app-data-source"
 
 import bcrypt from "bcrypt-nodejs";
 import { JWT_SECRET } from "../utils/secrets";
+import { Roles } from "../enums/roles.enum";
+import { createTokenFromUser } from "../utils/auth.util";
+import { createLoggedInUserDto } from "../utils/mapper.util";
 
 
 
@@ -30,35 +33,29 @@ const JwtStrategy = passportJwt.Strategy;
 passport.use(new LocalStrategy({
   usernameField: 'email',
   passwordField: 'password',
+  roleField: 'role',
   passReqToCallback : true
 
 },
-async (req, username, password, cb)=> {
+async (req, email, password, cb)=> {
 
-
-
-
-
-
-
-
-  const user = await dataSource.getRepository(Ngo).findOne({ where: { email: username } })
-
-
-
-
+  const role = req.query.role;
+  const type = entityBasedOnRole(role);
+  const user = await dataSource.getRepository(type).findOne({ where: { email } })
 
   if(!user)
     return cb(undefined, false, {
-      message: `email ${username} not found.`,
+      message: `email ${email} not found.`,
     });
 
   bcrypt.compare(
     password,
     user.password,
     (err: Error, isMatch:boolean)=>{
+      const token = createTokenFromUser(user, role)
+      const dto = createLoggedInUserDto(user, token);
       if(isMatch)
-        return cb(undefined, {email:user.email});
+        return cb(undefined, dto);
       else
         return cb(undefined, false, {
           message: "Invalid password.",
@@ -80,12 +77,8 @@ passport.use(
       secretOrKey: JWT_SECRET,
     },
     (jwtToken, cb) => {
-
-
-
-
-
-      dataSource.getRepository(Ngo).findOne({ where: { email: jwtToken.email } }).then((user) => {
+      const type = entityBasedOnRole(jwtToken.role);
+      dataSource.getRepository(type).findOne({ where: { id: jwtToken.id } }).then((user) => {
         if (!user) {
           return cb(false);
         }
@@ -95,8 +88,19 @@ passport.use(
           return cb(undefined, false);
         }
       });
-
-
     }
   )
 );
+
+function entityBasedOnRole(role: Roles): typeof Employee | typeof Enterprise | typeof Ngo {
+  switch (role) {
+    case Roles.Employee:
+      return Employee;
+    case Roles.Enterprise:
+      return Enterprise;
+    case Roles.Ngo:
+    return Ngo;
+    default:
+      break;
+  }
+}
