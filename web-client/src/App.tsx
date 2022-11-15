@@ -8,6 +8,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
 import hands from './assets/hands.png';
 import EventDetails from './components/EventDetails';
+import Registration from './components/Registration';
+import Login from './components/Login';
+
 function App() {
 
 
@@ -42,6 +45,36 @@ function App() {
     }>
 
     </Route>
+
+
+    <Route path='/registration' element={
+    
+        <div className='flex min-h-screen justify-center' style={{
+          backgroundImage: `url(${hands})`,
+          backgroundSize: 'cover',
+        }} >
+
+          <Registration/>
+        </div>
+    
+      }
+      
+    />
+
+<Route path='/login' element={
+    
+    <div className='flex min-h-screen justify-center' style={{
+      backgroundImage: `url(${hands})`,
+      backgroundSize: 'cover',
+    }} >
+
+      <Login/>
+    </div>
+
+  }
+  
+/>
+
 
 
     </Routes>
