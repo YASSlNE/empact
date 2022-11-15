@@ -376,9 +376,9 @@ chooseNgo && <div>
 
 
 
-                <div className='flex justify-center pt-1 text-xl text-white mt-[240px] ml-[130px]  w-[180px] h-[40px] rounded-[20px] bg-[#30017E]'>
+                <button className='flex justify-center pt-1 text-xl text-white mt-[240px] ml-[130px]  w-[180px] h-[40px] rounded-[20px] bg-[#30017E]'>
                   Sign up
-                </div>
+                </button>
 
                 <Link to='/login' className='flex ml-[130px] w-[400px] h-[40px] rounded-[20px] opacity-60	'>
                   already a member ? <div className='font-bold pl-1'> log in</div> 
