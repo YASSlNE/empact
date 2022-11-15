@@ -22,31 +22,21 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = __importDefault(require("express"));
-var app_data_source_1 = require("./app-data-source");
-var dotenv = __importStar(require("dotenv"));
-dotenv.config();
-var routes_1 = __importDefault(require("./routes"));
-// establish database connection
-app_data_source_1.dataSource
-    .initialize()
-    .then(function () {
-    console.log("Data Source has been initialized!");
-})
-    .catch(function (err) {
-    console.error("Error during Data Source initialization:", err);
-});
-// create and setup express app
-var app = (0, express_1.default)();
-app.use(express_1.default.json());
-// start express server
-var port = 3000;
-app.listen(port);
-console.log("server started at http://localhost:".concat(port));
-app.use('/api', routes_1.default.userRouter);
-app.use('/events', routes_1.default.eventsRouter);
-//# sourceMappingURL=app.js.map
+exports.getToken = exports.decodeToken = exports.createTokenFromUser = void 0;
+var jwt = __importStar(require("jsonwebtoken"));
+var secrets_1 = require("./secrets");
+var jwtDecode = __importStar(require("jwt-decode"));
+function createTokenFromUser(user, role) {
+    return jwt.sign({ id: user.id, role: role }, String(secrets_1.JWT_SECRET));
+}
+exports.createTokenFromUser = createTokenFromUser;
+function decodeToken(token) {
+    return jwtDecode.default(token);
+}
+exports.decodeToken = decodeToken;
+function getToken(req) {
+    return req.headers.authorization.replace("Bearer ", "");
+}
+exports.getToken = getToken;
+//# sourceMappingURL=auth.util.js.map

@@ -1,6 +1,11 @@
-import * as express from "express"
-import { Request, Response } from "express"
+import express from "express"
 import { dataSource } from "./app-data-source"
+import * as dotenv from 'dotenv'
+dotenv.config()
+
+import routes from './routes';
+
+
 
 // establish database connection
 dataSource
@@ -12,12 +17,20 @@ dataSource
         console.error("Error during Data Source initialization:", err)
     })
 
+
 // create and setup express app
 const app = express()
-app.use(express.json())
+app.use(express.json());
 
 
 // start express server
 const port = 3000;
 app.listen(port)
 console.log( `server started at http://localhost:${ port }` );
+
+
+
+
+
+app.use('/api', routes.userRouter);
+app.use('/events', routes.eventsRouter);
