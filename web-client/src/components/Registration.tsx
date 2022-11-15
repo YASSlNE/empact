@@ -29,7 +29,7 @@ function Registration() {
                 
 
 
-            <div className="flex justify-center bg-white mt-[30px]">
+            <div className="flex justify-center bg-white mt-[30px] h-[100px] w-[100px]">
               Employee
             </div>
 
