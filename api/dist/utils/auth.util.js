@@ -23,11 +23,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTokenFromUser = void 0;
+exports.getToken = exports.decodeToken = exports.createTokenFromUser = void 0;
 var jwt = __importStar(require("jsonwebtoken"));
 var secrets_1 = require("./secrets");
+var jwtDecode = __importStar(require("jwt-decode"));
 function createTokenFromUser(user, role) {
     return jwt.sign({ id: user.id, role: role }, String(secrets_1.JWT_SECRET));
 }
 exports.createTokenFromUser = createTokenFromUser;
+function decodeToken(token) {
+    return jwtDecode.default(token);
+}
+exports.decodeToken = decodeToken;
+function getToken(req) {
+    return req.headers.authorization.replace("Bearer ", "");
+}
+exports.getToken = getToken;
 //# sourceMappingURL=auth.util.js.map

@@ -114,33 +114,37 @@ var UserController = /** @class */ (function () {
     // Employee Registration
     UserController.prototype.registerEmployee = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, name, email, password, age, sex, enterprise, employee, ngo, newEmployee, response, token, dto;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var _a, name, email, password, age, sex, companyMail, enterprise, employee, ngo, newEmployee, _b, response, token, dto;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        _a = req.body, name = _a.name, email = _a.email, password = _a.password, age = _a.age, sex = _a.sex;
+                        _a = req.body, name = _a.name, email = _a.email, password = _a.password, age = _a.age, sex = _a.sex, companyMail = _a.companyMail;
                         return [4 /*yield*/, app_data_source_1.dataSource.getRepository(enterprise_1.Enterprise).findOne({ where: { email: req.body.email } })];
                     case 1:
-                        enterprise = _b.sent();
+                        enterprise = _c.sent();
                         return [4 /*yield*/, app_data_source_1.dataSource.getRepository(employee_1.Employee).findOne({ where: { email: req.body.email } })];
                     case 2:
-                        employee = _b.sent();
+                        employee = _c.sent();
                         return [4 /*yield*/, app_data_source_1.dataSource.getRepository(ngo_1.Ngo).findOne({ where: { email: req.body.email } })];
                     case 3:
-                        ngo = _b.sent();
+                        ngo = _c.sent();
                         if (enterprise || ngo || employee)
                             return [2 /*return*/, res.status(400).send({ error: 'user already exist' })];
                         return [4 /*yield*/, app_data_source_1.dataSource.getRepository(employee_1.Employee).create()];
                     case 4:
-                        newEmployee = _b.sent();
+                        newEmployee = _c.sent();
                         newEmployee.email = email;
                         newEmployee.name = name;
                         newEmployee.age = age;
                         newEmployee.password = bcrypt_nodejs_1.default.hashSync(password, bcrypt_nodejs_1.default.genSaltSync(10));
                         newEmployee.sex = sex;
-                        return [4 /*yield*/, app_data_source_1.dataSource.getRepository(employee_1.Employee).save(newEmployee)];
+                        _b = newEmployee;
+                        return [4 /*yield*/, app_data_source_1.dataSource.getRepository(enterprise_1.Enterprise).findOne({ where: { email: companyMail } })];
                     case 5:
-                        response = _b.sent();
+                        _b.enterprise = _c.sent();
+                        return [4 /*yield*/, app_data_source_1.dataSource.getRepository(employee_1.Employee).save(newEmployee)];
+                    case 6:
+                        response = _c.sent();
                         token = (0, auth_util_1.createTokenFromUser)(response, roles_enum_1.Roles.Employee);
                         dto = (0, mapper_util_1.createLoggedInUserDto)(response, token);
                         return [2 /*return*/, res.status(200).send({ dto: dto })];

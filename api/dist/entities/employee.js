@@ -31,6 +31,7 @@ exports.Employee = void 0;
 var typeorm_1 = require("typeorm");
 var enterprise_1 = require("./enterprise");
 var user_1 = __importDefault(require("./user"));
+var event_1 = require("./event");
 var Employee = /** @class */ (function (_super) {
     __extends(Employee, _super);
     function Employee() {
@@ -52,6 +53,10 @@ var Employee = /** @class */ (function (_super) {
         (0, typeorm_1.ManyToOne)(function () { return enterprise_1.Enterprise; }, function (enterprise) { return enterprise.employees; }),
         __metadata("design:type", enterprise_1.Enterprise)
     ], Employee.prototype, "enterprise", void 0);
+    __decorate([
+        (0, typeorm_1.ManyToMany)(function () { return event_1.Event; }, function (event) { return event.participants; }),
+        __metadata("design:type", Array)
+    ], Employee.prototype, "eventHistory", void 0);
     Employee = __decorate([
         (0, typeorm_1.Entity)()
     ], Employee);

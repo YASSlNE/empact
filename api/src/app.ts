@@ -1,12 +1,7 @@
 import express from "express"
-import { Request, Response } from "express"
 import { dataSource } from "./app-data-source"
 import * as dotenv from 'dotenv'
 dotenv.config()
-
-
-
-import bodyParser from "body-parser";
 
 import routes from './routes';
 
@@ -38,3 +33,4 @@ console.log( `server started at http://localhost:${ port }` );
 
 
 app.use('/api', routes.userRouter);
+app.use('/events', routes.eventsRouter);

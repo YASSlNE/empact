@@ -29,6 +29,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Ngo = void 0;
 var typeorm_1 = require("typeorm");
+var event_1 = require("./event");
 var user_1 = __importDefault(require("./user"));
 var Ngo = /** @class */ (function (_super) {
     __extends(Ngo, _super);
@@ -39,6 +40,10 @@ var Ngo = /** @class */ (function (_super) {
         (0, typeorm_1.Column)(),
         __metadata("design:type", String)
     ], Ngo.prototype, "fieldOfInterest", void 0);
+    __decorate([
+        (0, typeorm_1.OneToMany)(function () { return event_1.Event; }, function (event) { return event.organizer; }),
+        __metadata("design:type", Array)
+    ], Ngo.prototype, "events", void 0);
     Ngo = __decorate([
         (0, typeorm_1.Entity)()
     ], Ngo);

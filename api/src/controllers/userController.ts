@@ -82,7 +82,7 @@ export class UserController {
 // Employee Registration
 
     public async registerEmployee(req: Request, res: Response) {
-        const { name, email, password, age, sex  } = req.body;
+        const { name, email, password, age, sex, companyMail  } = req.body;
 
 
 
@@ -98,8 +98,6 @@ export class UserController {
                 { where: { email: req.body.email } }
                 );
 
-
-
         if (enterprise || ngo || employee)
             return res.status(400).send({ error: 'user already exist' });
 
@@ -109,6 +107,7 @@ export class UserController {
         newEmployee.age = age;
         newEmployee.password = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
         newEmployee.sex = sex;
+        newEmployee.enterprise = await dataSource.getRepository(Enterprise).findOne({where: {email: companyMail}})
         const response = await dataSource.getRepository(Employee).save(newEmployee);
         const token = createTokenFromUser(response, Roles.Employee)
         const dto = createLoggedInUserDto(response, token);

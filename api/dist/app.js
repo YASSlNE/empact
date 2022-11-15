@@ -48,4 +48,5 @@ var port = 3000;
 app.listen(port);
 console.log("server started at http://localhost:".concat(port));
 app.use('/api', routes_1.default.userRouter);
+app.use('/events', routes_1.default.eventsRouter);
 //# sourceMappingURL=app.js.map

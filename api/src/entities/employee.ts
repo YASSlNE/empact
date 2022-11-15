@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToMany, ManyToOne } from "typeorm";
 import { Enterprise } from "./enterprise";
 import  User  from "./user";
+import { Event } from "./event";
 
 @Entity()
 export class Employee extends User {
@@ -15,4 +16,7 @@ export class Employee extends User {
 
     @ManyToOne(() => Enterprise, (enterprise) => enterprise.employees)
     enterprise: Enterprise
+
+    @ManyToMany(() => Event, (event) => event.participants)
+    eventHistory: Event[]
 }
