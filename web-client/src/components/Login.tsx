@@ -60,9 +60,9 @@ function Login() {
                         <label htmlFor="role" className="block w-[400px] mt-[26px] ml-[26px] mb-2 text-xl text-black">Choose role :</label>
                         <select id="role" onChange={handleRole} className="border mx-[50px] w-[366px] h-[36px]  text-black text-sm rounded-[20px] pl-2">
                           
-                          <option selected value="0">Employee</option>
-                          <option value="1">Enterprise</option>
-                          <option value="2">NGO</option>
+                          <option selected value="Employee">Employee</option>
+                          <option value="Enterprise">Enterprise</option>
+                          <option value="Ngo">NGO</option>
                         </select>
 
 

@@ -10,6 +10,7 @@ import hands from './assets/hands.png';
 import EventDetails from './components/EventDetails';
 import Registration from './components/Registration';
 import Login from './components/Login';
+import AddEvent from './components/AddEvent';
 
 function App() {
 
@@ -74,6 +75,24 @@ function App() {
   }
   
 />
+
+
+<Route path='/addEvent' element={
+    
+    <div className='flex min-h-screen justify-center' style={{
+      backgroundImage: `url(${hands})`,
+      backgroundSize: 'cover',
+    }} >
+
+      <AddEvent/>
+    </div>
+
+  }
+  
+/>
+
+
+
 
 
 
