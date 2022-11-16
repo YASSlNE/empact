@@ -44,7 +44,7 @@ app_data_source_1.dataSource
 var app = (0, express_1.default)();
 app.use(express_1.default.json());
 // start express server
-var port = 3000;
+var port = 4444;
 app.listen(port);
 console.log("server started at http://localhost:".concat(port));
 app.use('/api', routes_1.default.userRouter);
