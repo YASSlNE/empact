@@ -7,7 +7,7 @@ import {v4 as uuidv4} from 'uuid'
 import cardLogo from '../assets/cardLogo2.jpeg';
 
 export interface event{
-    eventPictureUrl?: string;
+    pictureUrl?: string;
     name?: string;
     mainActivity?: string;
     date?: Date;
@@ -24,7 +24,7 @@ EventCard.defaultProps={
     name:"ziw",
     mainActivity:"Actziwziw",
 }
-function EventCard({eventPictureUrl, name,  date, location, numberOfNeededVolunteers, pointsPerVolunteer, details, id} : event) {
+function EventCard({pictureUrl, name,  date, location, numberOfNeededVolunteers, pointsPerVolunteer, details, id} : event) {
 
 
 
@@ -34,7 +34,7 @@ function EventCard({eventPictureUrl, name,  date, location, numberOfNeededVolunt
 
 
     const bgSettings={
-        backgroundImage: `url(${eventPictureUrl})`,
+        backgroundImage: `url(${pictureUrl})`,
         backgroundSize: 'cover',
         
     }
@@ -46,7 +46,7 @@ function EventCard({eventPictureUrl, name,  date, location, numberOfNeededVolunt
 
   return (
     <>
-    <Link to='/cardDetails/' state={{eventPictureUrl:eventPictureUrl, name: name,  date:date, location:location, numberOfNeededVolunteers:numberOfNeededVolunteers, pointsPerVolunteer, details:details}}>
+    <Link to='/cardDetails/' state={{pictureUrl:pictureUrl, name: name,  date:date, location:location, numberOfNeededVolunteers:numberOfNeededVolunteers, pointsPerVolunteer, details:details}}>
     <div style={bgSettings} onMouseLeave={(MouseEvent)=> setHover(false)} onMouseEnter={(MouseEvent)=> setHover(true)} className="flex w-[250px] h-[250px] rounded-xl">
         
         

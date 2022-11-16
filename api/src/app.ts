@@ -24,7 +24,7 @@ app.use(express.json());
 
 
 // start express server
-const port = 3000;
+const port = 4444;
 app.listen(port)
 console.log( `server started at http://localhost:${ port }` );
 
